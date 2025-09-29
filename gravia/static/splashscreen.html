@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Logo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anta&family=Orbitron:wght@700"
+        rel="stylesheet">
+    <script src="gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #0c1327 0%, #020203 75%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: '', sans-serif;
+        }
+
+        .logo-container {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 17%;
+        }
+
+        #logo-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 20px rgba(5, 222, 254, 0.6));
+        }
+
+        .logo-path {
+            fill: #05defe;
+            filter: drop-shadow(0 0 10px rgba(5, 222, 254, 0.8));
+            stroke: #05defe;
+            stroke-width: 2;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+        }
+
+        .gravia-title {
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            transform: translate(-50%, 40px);
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #05defe;
+            letter-spacing: 0.18em;
+            opacity: 0;
+            filter: drop-shadow(0 0 10px #05defe88);
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            width: auto;
+        }
+
+        .letter {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(50px) rotateX(90deg);
+            filter: drop-shadow(0 0 15px rgba(5, 222, 254, 0));
+            margin-right: 0.05em;
+        }
+
+
+        .anta {
+            font-family: 'Anta', sans-serif;
+        }
+        .orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="logo-container">
+        <svg id="logo-svg" viewBox="0 0 1790 1790" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(261.95122,288.14634)">
+                <!-- Main curved path -->
+                <path class="logo-path main-curve"
+                    d="m 835.33338,525.35773 c 488.97562,1.45528 490.43082,0 490.43082,0 v 520.99187 l -164.4471,145.5285 -1.4553,-503.5285 -320.22402,-4.05165 c 0,0 15.9502,-31.90029 19.0373,-78.72168 3.0871,-46.82139 -23.3417,-80.21854 -23.3417,-80.21854 z" />
+
+                <!-- Large circle -->
+                <path class="logo-path large-circle"
+                    d="m 696.60151,499.58413 c -59.67512,-7.8e-4 -108.05156,48.37566 -108.05078,108.05078 2.8e-4,59.67437 48.37641,108.04963 108.05078,108.04885 59.67362,-2.7e-4 108.04859,-48.37523 108.04887,-108.04885 7.8e-4,-59.67438 -48.37449,-108.05051 -108.04887,-108.05078 z m 0,43.92383 c 37.22585,-8e-5 67.40318,29.78986 67.40237,66.53711 -2.9e-4,36.74649 -30.17729,66.53523 -67.40237,66.53515 -37.22506,6e-5 -67.40205,-29.78867 -67.40234,-66.53515 -8.1e-4,-36.74724 30.1765,-66.53717 67.40234,-66.53711 z" />
+
+                <!-- Top right circle -->
+                <path class="logo-path top-circle"
+                    d="m 1252.7988,153.82632 c -52.8544,-1.8e-4 -95.7014,42.84679 -95.7012,95.70117 -2e-4,52.85438 42.8468,95.70135 95.7012,95.70117 52.8536,-9.2e-4 95.6994,-42.84757 95.6992,-95.70117 2e-4,-52.8536 -42.8456,-95.70025 -95.6992,-95.70117 z m 1.0195,39.7539 c 30.0247,0.95386 53.591,26.06716 52.6367,56.0918 -0.9538,30.02543 -26.0683,53.59213 -56.0937,52.63672 -30.0247,-0.95488 -53.5903,-26.06908 -52.6348,-56.09375 0.9549,-30.02389 26.0679,-53.58912 56.0918,-52.63477 z" />
+
+                <!-- Top left small circle -->
+                <path class="logo-path top-left-circle"
+                    d="m 702.4149,195.20266 c -32.53655,-1.1e-4 -58.91267,26.376 -58.91257,58.91255 -1.1e-4,32.53656 26.37601,58.91267 58.91257,58.91256 32.53609,-5.5e-4 58.91149,-26.37647 58.91138,-58.91256 10e-5,-32.53609 -26.37529,-58.912 -58.91138,-58.91255 z m 0.6276,24.47205 c 18.48281,0.58722 32.98997,16.04667 32.40249,34.52947 -0.58717,18.48329 -16.04733,32.99068 -34.53059,32.40257 -18.48285,-0.58782 -32.98954,-16.04783 -32.40138,-34.53067 0.58783,-18.48237 16.0471,-32.98886 34.52948,-32.40137 z" />
+
+                <!-- Bottom left small circle -->
+                <path class="logo-path bottom-left-circle"
+                    d="m 702.81635,901.86446 c -32.53657,-1.1e-4 -58.9127,26.37603 -58.91257,58.9126 -9e-5,32.53655 26.37602,58.91264 58.91257,58.91254 32.53606,-6e-4 58.91142,-26.37648 58.91133,-58.91254 1.3e-4,-32.53609 -26.37524,-58.91203 -58.91133,-58.9126 z m 0.6276,24.4721 c 18.48282,0.58722 32.98999,16.04669 32.40249,34.5295 -0.58721,18.48326 -16.04736,32.99061 -34.53059,32.4025 -18.48282,-0.58782 -32.9895,-16.04779 -32.40138,-34.5306 0.58781,-18.48238 16.04709,-32.98889 34.52948,-32.4014 z" />
+
+                <!-- Left arc -->
+                <path class="logo-path left-arc"
+                    d="m 97.50406,723.27646 c 31.57168,111.86628 77.18746,225.99381 166.35443,304.75904 54.06561,52.0091 116.57888,95.8007 187.79692,120.7013 88.87339,37.0011 188.61221,50.9988 282.35516,47.8232 32.43895,0.7477 84.22912,-15.9022 115.22035,-20.3402 39.92261,41.0698 83.70414,88.8283 123.62676,129.8981 -117.22074,45.6199 -244.0731,70.8403 -369.99838,56.3911 -96.95399,-9.8794 -191.50067,-40.7751 -278.74966,-83.6674 -60.92951,-38.1967 -122.45548,-77.3938 -174.7457,-127.1973 C 65.266034,1069.59 1.0359357,968.28405 -37.552873,857.31106 -55.802409,812.84621 -59.484251,764.86442 -69.12602,718.18296 c 55.54336,1.69783 111.08672,3.39567 166.63008,5.0935 z" />
+
+                <!-- Top arc -->
+                <path class="logo-path top-arc"
+                    d="M -71.57853,467.17018 C -78.29002,463.18709 -26.47647,286.24406 32.35467,192.41608 93.38814,95.075659 192.71577,5.3587185 197.00132,9.2466785 195.93861,8.7929685 286.3098,-68.565101 395.10976,-111.32927 c 98.9717,-38.90114 177.23898,-46.48524 177.54471,-45.84146 0,0 146.2561,-17.46341 245.94311,7.27642 99.687,24.73984 132.4309,26.92277 257.58532,101.869919 125.1545,74.94716 169.5407,142.61789 169.5407,142.61789 0,0 -42.5671,8.731711 -66.2154,25.467481 -23.6484,16.73577 -34.1384,26.62864 -58.2114,54.20935 -17.6858,20.26285 -5.6931,3.8457 -71.309,-42.9309 C 986.15788,85.836059 960.63778,71.868329 916.46548,52.390249 864.88808,29.646829 767.51038,-3.2871515 664.70122,1.8191085 560.34792,7.0020585 489.76365,20.566129 388.40306,79.221499 287.04246,137.87687 213.19919,211.01626 163.71951,293.96748 114.23984,376.9187 97.50406,468.60163 97.50406,468.60163 Z" />
+
+                <!-- Inner curved path -->
+                <path class="logo-path inner-curve"
+                    d="M 647.11066,979.94919 C 593.56144,969.22579 533.86956,950.80344 486.84885,921.33742 446.60251,896.04961 411.08029,863.08369 383.36382,824.15316 357.50845,787.74236 338.72502,746.62127 327.59642,703.58654 316.6732,661.333 312.96129,617.42169 316.09041,574.0765 c 3.0756,-42.85481 12.78911,-85.23819 28.93604,-125.1437 l 2e-5,-4e-5 c 15.81482,-39.13968 37.98583,-75.92106 66.21587,-107.79481 28.07706,-31.69028 62.27647,-58.14074 100.7226,-76.66731 40.95331,-19.63018 92.22285,-34.79497 137.26697,-35.69843 -3.5901,13.20559 -5.72958,25.343 -4.55228 37.06192 -39.52718,0.84562 -79.81084,18.27221 -115.09578,35.28945 -33.26379,15.94412 -63.19542,39.17286 -87.91931,67.00236 -24.94296,28.06531 -44.68945,60.93763 -58.94234,96.06772 l -10e-6,5e-5 c -14.52564,35.85838 -23.28339,74.12682 -26.06874,112.79885 -2.79758,39.09655 0.51642,78.63776 10.31227,116.39976 9.95549,38.39046 26.66434,75.05515 49.54367,107.19743 l 4e-5,4e-5 c 24.4008,34.38066 56.09088,63.72558 91.98858,86.32123 41.98238,26.50389 89.95909,43.81319 139.47318,53.87305 -5.13637,13.60228 -5.42321,26.65732 -0.86053,39.16512 z" />
+            </g>
+        </svg>
+        <div class="gravia-title" id="gravia-title">
+            <span class="letter ">G</span>
+            <span class="letter orbitron">r</span>
+            <span class="letter anta">a</span>
+            <span class="letter orbitron">v</span>
+            <span class="letter orbitron">i</span>
+            <span class="letter anta">a</span>
+        </div>
+    </div>
+
+    <script>
+        // Set initial state - paths are invisible and not drawn
+        gsap.set(".logo-path", {
+            opacity: 0,
+            fill: "transparent",
+            strokeDashoffset: 1000
+        });
+        gsap.set("#gravia-title", { opacity: 1 });
+        gsap.set(".letter", {
+            opacity: 0,
+            y: 50,
+            rotationX: 90,
+            filter: "drop-shadow(0 0 0px rgba(5, 222, 254, 0))"
+        });
+
+        // Drawing entrance animation
+        function playEntrance(onComplete) {
+            const tl = gsap.timeline({ onComplete });
+            const drawOrder = [
+                ".top-arc",
+                ".left-arc",
+                ".main-curve",
+                ".inner-curve",
+                ".large-circle",
+                ".top-circle",
+                ".top-left-circle",
+                ".bottom-left-circle"
+            ];
+            tl.set(".logo-path", { opacity: 1 })
+                .to(drawOrder, {
+                    strokeDashoffset: 0,
+                    duration: 1.2,
+                    ease: "power2.inOut",
+                    stagger: 0.08
+                }, 0)
+                .to(drawOrder, {
+                    fill: "#05defe",
+                    duration: 0.8,
+                    ease: "power2.out",
+                    stagger: 0.05
+                }, 0.8)
+                .to(".logo-path", {
+                    filter: "drop-shadow(0 0 15px rgba(5, 222, 254, 0.8))",
+                    duration: 0.6,
+                    stagger: 0.03
+                }, 1.5)
+                .to(".logo-path", {
+                    scale: 1.02,
+                    duration: 0.3,
+                    yoyo: true,
+                    repeat: 1,
+                    ease: "power2.inOut"
+                }, 2);
+            return tl;
+        }
+        // Cinematic Gravia text reveal
+        function showTitle() {
+            const tl = gsap.timeline();
+
+            // Add dramatic pause before text reveal
+            tl.to({}, { duration: 0.3 })
+
+                // Animate each letter with staggered timing and effects
+                .to(".letter", {
+                    opacity: 1,
+                    y: 0,
+                    rotationX: 0,
+                    duration: 0.8,
+                    ease: "back.out(2)",
+                    stagger: 0.08,
+                    filter: "drop-shadow(0 0 15px rgba(5, 222, 254, 0.8))"
+                })
+
+                // Add a secondary glow effect
+                .to(".letter", {
+                    filter: "drop-shadow(0 0 20px rgba(5, 222, 254, 0.8))",
+                    duration: 0.4,
+                    stagger: 0.05,
+                    ease: "power2.out"
+                }, "-=0.6")
+
+                // Final settling animation
+                .to(".letter", {
+                    scale: 1.05,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1,
+                    stagger: 0.03,
+                    ease: "power2.inOut"
+                }, "-=0.2")
+        }
+
+        // Splashscreen sequence
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                playEntrance(() => {
+                    showTitle();
+                });
+            }, 700);
+        });
+
+        // Continuous subtle glow animation 
+        gsap.to("#logo-svg", {
+            filter: "drop-shadow(0 0 20px rgba(5, 222, 254, 0.3))",
+            duration: 3,
+            ease: "power2.out"
+        });
+    </script>
+</body>
+
+</html>

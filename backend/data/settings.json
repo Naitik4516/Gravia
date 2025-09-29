@@ -1,0 +1,461 @@
+{
+    "general": [
+        {
+            "label": "Launch on startup",
+            "key": "auto_start",
+            "value": false,
+            "type": "boolean",
+            "description": "Start Gravia automatically when you sign in."
+        },
+        {
+            "label": "Auto-send transcription",
+            "key": "auto_send_transcription",
+            "value": false,
+            "type": "boolean",
+            "description": "Automatically send transcription to the agent after finalized."
+        },
+        {
+            "label": "TTS voice",
+            "key": "voice",
+            "value": "en-US-EmmaMultilingualNeural",
+            "type": "combobox",
+            "options": "dynamic_voices",
+            "description": "Voice used for text-to-speech."
+        },
+        {
+            "label": "Auto-read replies",
+            "key": "auto_speak",
+            "value": false,
+            "type": "boolean",
+            "description": "Speak the assistant's reply automatically."
+        },
+        {
+            "label": "Auto-listen after TTS",
+            "key": "auto_listen",
+            "value": true,
+            "type": "boolean",
+            "description": "Listen for follow-ups after TTS playback."
+        },
+        {
+            "label": "Auto capture screen context",
+            "key": "auto_capture_screen",
+            "value": true,
+            "type": "boolean",
+            "description": "Automatically capture screenshots for context based on query. "
+        }
+    ],
+    "conversation": [
+        {
+            "label": "Chat model",
+            "key": "primary_model",
+            "value": "gemini-2.5-flash",
+            "type": "select",
+            "description": "Primary LLM used for chatting.",
+            "options": [
+                "gemini-2.5-flash",
+                "gemini-2.5-flash-lite",
+                "gemini-2.0-flash",
+                "gemini-2.0-flash-lite",
+                "gemma-3-1b-it",
+                "gemma-3-4b-it",
+                "gemma-3-12b-it",
+                "gemma-3-27b-it",
+                "gemma-3n-e4b-it",
+                "gemma-3n-e2b-it"
+            ]
+        },
+        {
+            "label": "Thinking tokens (chat model)",
+            "key": "thinking_budget_primary",
+            "value": -1,
+            "type": "number",
+            "description": "Max tokens to think before responding. -1 dynamic, 0 none.",
+            "min": -1,
+            "max": 24576,
+            "parent": "primary_model",
+            "condition": [
+                "gemini-2.5-flash",
+                "gemini-2.5-flash-lite"
+            ],
+            "condition_type": "in"
+        },
+        {
+            "label": "Reasoning model",
+            "key": "reasoning_model",
+            "value": "gemini-2.5-pro",
+            "type": "select",
+            "description": "Model used for complex reasoning.",
+            "options": [
+                "gemini-2.5-flash",
+                "gemini-2.5-pro"
+            ],
+            "min": null,
+            "max": null,
+            "labels": null
+        },
+        {
+            "label": "Thinking tokens (reasoning model)",
+            "key": "thinking_budget_reasoning",
+            "value": -1,
+            "type": "number",
+            "description": "Max tokens to think before responding. -1 dynamic.",
+            "min": -1,
+            "max": 32768,
+            "parent": "reasoning_model",
+            "condition": "gemini-2.5-pro",
+            "condition_type": "equals"
+        },
+        {
+            "label": "Image model",
+            "key": "image_model",
+            "value": "gemini-2.0-flash-preview-image-generation",
+            "type": "select",
+            "description": "Model for image generation and editing.",
+            "options": [
+                "gemini-2.5-flash-image-preview",
+                "gemini-2.0-flash-preview-image-generation"
+            ],
+            "min": null,
+            "max": null,
+            "labels": null
+        },
+        {
+            "label": "Memory",
+            "key": "memory",
+            "value": true,
+            "type": "boolean",
+            "description": "Remember context across sessions."
+        },
+        {
+            "label": "Previous sessions to include",
+            "key": "num_history_sessions",
+            "value": 3,
+            "type": "number",
+            "description": "How many past sessions to include.",
+            "min": 0,
+            "max": 20
+        },
+        {
+            "label": "Generate session summaries",
+            "key": "generate_session_summaries",
+            "value": false,
+            "type": "boolean",
+            "description": "Create brief summaries of each session."
+        },
+        {
+            "label": "Include session summaries",
+            "key": "add_session_summary_to_context",
+            "value": false,
+            "type": "boolean",
+            "description": "Add previous session summaries to context."
+        },
+        {
+            "label": "Include chat history",
+            "key": "add_history_to_context",
+            "value": true,
+            "type": "boolean",
+            "description": "Add prior messages to context."
+        },
+        {
+            "label": "Include current date/time",
+            "key": "add_datetime_to_context",
+            "value": true,
+            "type": "boolean",
+            "description": "Provide the current date and time in context."
+        },
+        {
+            "label": "Knowledge search (RAG)",
+            "key": "search_knowledge",
+            "value": true,
+            "type": "boolean",
+            "description": "Use the internal knowledge base to answer queries."
+        }
+    ],
+    "personalization": [
+        {
+            "label": "Tone",
+            "key": "response_tone",
+            "value": "witty",
+            "type": "select",
+            "options": [
+                "Formal",
+                "Informal",
+                "Neutral",
+                "Professional",
+                "Encouraging",
+                "Optimistic",
+                "Witty or Playful",
+                "Sarcastic",
+                "Empathetic"
+            ],
+            "description": "Overall response tone."
+        },
+        {
+            "label": "Preferred name",
+            "key": "preferred_name",
+            "value": "",
+            "type": "string",
+            "description": "How should the assistant address you?"
+        },
+        {
+            "label": "Reply length",
+            "key": "response_length",
+            "value": "dynamic",
+            "type": "select",
+            "options": [
+                "brief",
+                "moderate",
+                "detailed",
+                "dynamic"
+            ],
+            "description": "Default level of detail."
+        },
+        {
+            "label": "Humor",
+            "key": "humor_level",
+            "value": "balanced",
+            "type": "select",
+            "options": [
+                "serious",
+                "slightly humorous",
+                "balanced",
+                "funny",
+                "very humorous"
+            ],
+            "description": "How much humor to include."
+        },
+        {
+            "label": "Preferred Language",
+            "key": "preferred_language",
+            "value": "English",
+            "type": "string",
+            "description": "Preferred language for responses."
+        },
+        {
+            "label": "Custom instructions",
+            "key": "custom_instructions",
+            "value": "",
+            "type": "text",
+            "description": "Additional guidelines for the assistant."
+        }
+    ],
+    "safety_and_security": [
+        {
+            "label": "Content safety level",
+            "key": "safety_filters",
+            "value": "low",
+            "type": "select",
+            "options": [
+                "off",
+                "low",
+                "medium",
+                "high"
+            ],
+            "description": "Safety filtering applied to responses."
+        },
+        {
+            "label": "Blocked commands",
+            "key": "blocked_commands",
+            "type": "list",
+            "value": [
+                "shutdown",
+                "rm",
+                "del",
+                "format",
+                "taskkill /F /IM explorer.exe",
+                "Stop-Computer",
+                "reg delete",
+                "net user Administrator /active:no"
+            ],
+            "description": "Commands blocked from execution."
+        },
+        {
+            "label": "Allowed directories",
+            "key": "allowed_directories",
+            "type": "list",
+            "value": [
+                "~",
+                "%HOMEDRIVE%",
+                "%temp%"
+            ],
+            "description": "Directories where file operations are allowed."
+        },
+        {
+            "label": "Share anonymous telemetry",
+            "key": "telemetry",
+            "value": true,
+            "type": "boolean",
+            "description": "Allow anonymous usage data to improve the app."
+        }
+    ],
+    "configuration": [
+        {
+            "label": "Google Gemini API key",
+            "key": "gemini_api_key",
+            "value": "",
+            "type": "password",
+            "description": "API key for Google Gemini services. Get one at https://aistudio.google.com/apikey .\n By default it uses a public key with limited access. It is highly recommended to get your own key.",
+            "options": null,
+            "min": null,
+            "max": null,
+            "auth_id": null,
+            "parent": null,
+            "condition_type": null,
+            "condition": null
+        },
+        {
+            "label": "Deepgram API key",
+            "key": "deepgram_api_key",
+            "value": "",
+            "type": "password",
+            "description": "API key for Deepgram speech recognition. Get one at https://console.deepgram.com .\n By default it uses a public key with limited access. It is highly recommended to get your own key.",
+            "options": null,
+            "min": null,
+            "max": null,
+            "auth_id": null,
+            "parent": null,
+            "condition_type": null,
+            "condition": null
+        },
+        {
+            "label": "Default shell",
+            "key": "default_shell",
+            "value": "pwsh",
+            "type": "string",
+            "description": "Shell to execute system commands (e.g., pwsh, bash, cmd).",
+            "options": null,
+            "min": null,
+            "max": null,
+            "auth_id": null,
+            "parent": null,
+            "condition_type": null,
+            "condition": null
+        },
+        {
+            "label": "Max lines per file",
+            "key": "file_read_line_limit",
+            "value": 1000,
+            "type": "number",
+            "description": "Maximum number of lines to read from a file.",
+            "options": null,
+            "min": null,
+            "max": null,
+            "auth_id": null,
+            "parent": null,
+            "condition_type": null,
+            "condition": null
+        }
+    ],
+    "keyboard_shortcuts": [
+        {
+            "label": "Open mini window",
+            "key": "mini_window_shortcut",
+            "value": "Ctrl+Shift+G",
+            "type": "shortcut",
+            "description": "Open Gravia's mini window."
+        },
+        {
+            "label": "Toggle listening",
+            "key": "toggle_listening_shortcut",
+            "value": "Ctrl+Shift+L",
+            "type": "shortcut",
+            "description": "Start or stop listening."
+        },
+        {
+            "label": "Push-to-talk",
+            "key": "push_to_talk_shortcut",
+            "value": "Ctrl+Space",
+            "type": "shortcut",
+            "description": "Hold to speak."
+        },
+        {
+            "label": "Speak last response",
+            "key": "speak_last_response_shortcut",
+            "value": "Ctrl+Q",
+            "type": "shortcut",
+            "description": "Speak the previous assistant response."
+        }
+    ],
+    "integrations": [
+        {
+            "label": "Gmail",
+            "key": "GMAIL",
+            "auth_id": "ac_ezCb1lBUFJ1S",
+            "type": "integration",
+            "value": false,
+            "description": "Enables to read, draft, send, and manage emails."
+        },
+        {
+            "label": "Google Calendar",
+            "key": "GOOGLE_CALENDAR",
+            "auth_id": "ac_MBMTSCqS5LKk",
+            "value": false,
+            "type": "integration",
+            "description": "Enables to manage your schedule with Google Calendar."
+        },
+        {
+            "label": "Google Drive",
+            "key": "GOOGLE_DRIVE",
+            "auth_id": "ac_dloS9VChTclX",
+            "value": false,
+            "type": "integration",
+            "description": "Store and access files in Google Drive."
+        },
+        {
+            "label": "OneDrive",
+            "key": "ONE_DRIVE",
+            "auth_id": "ac_c509TpOSuXFe",
+            "value": false,
+            "type": "integration",
+            "description": "Store and access files in Microsoft OneDrive."
+        },
+        {
+            "label": "Notion",
+            "key": "NOTION",
+            "auth_id": "ac_TON11Yklif70",
+            "value": false,
+            "type": "integration",
+            "description": "Work with Notion pages, databases, and tasks."
+        },
+        {
+            "label": "Google Maps",
+            "key": "GOOGLE_MAPS",
+            "auth_id": "ac_3h4x3nF2CK54",
+            "value": false,
+            "type": "integration",
+            "description": "Use Google Maps for location and routing."
+        },
+        {
+            "label": "Instagram",
+            "key": "INSTAGRAM",
+            "auth_id": "ac_KWN9uqf9obb3",
+            "value": false,
+            "type": "integration",
+            "description": "Create posts, manage DMs, comments, and fetch conversations."
+        },
+        {
+            "label": "Twitter (X)",
+            "key": "TWITTER",
+            "auth_id": "ac_DQ4myO3EMFd6",
+            "value": false,
+            "type": "integration",
+            "description": "Publish posts, like/retweet, follow/unfollow, and manage DMs."
+        },
+        {
+            "label": "Reddit",
+            "key": "REDDIT",
+            "auth_id": "ac_iXcqCrouJcjR",
+            "value": false,
+            "type": "integration",
+            "description": "Create posts/comments, edit or delete content, and browse threads."
+        },
+        {
+            "label": "Facebook",
+            "key": "FACEBOOK",
+            "auth_id": "ac_ppdt4qqqjXys",
+            "value": false,
+            "type": "integration",
+            "description": "Publish and manage posts, comments, reactions, and page messages."
+        }
+    ]
+}
