@@ -18,7 +18,7 @@
         "width": 1100,
         "decorations": false,
         "minWidth": 1060,
-        "visible": false
+        "visible": true
       },
       {
         "title": "Loading...",
@@ -46,6 +46,16 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
+    ],
+     "externalBin": [
+      "backend/server",
+      "backend/appManager",
+      "backend/notifier"
+     ],
+    "resources": [
+      "data/",
+      "_internal/",
+      "silero_vad.onnx"
     ]
   },
   "plugins": { }

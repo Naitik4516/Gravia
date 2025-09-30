@@ -14,7 +14,6 @@
   * Gmail, Google Drive, Google Calendar  
   * OneDrive, Notion  
   * Instagram, Facebook, X (Twitter), Reddit, and more\!  
-* **Headless Music Playback:** Enjoy your favorite tunes without needing to have a music application visible. Gravia can play songs in the background, freeing up your screen.  
 * **Agentic RAG:** Leverage Gravia's powerful Agentic Retrieval-Augmented Generation (RAG) to provide your own custom data, allowing you to create a truly personalized assistant that knows your specific information.  
 * **Multimodal Understanding:** Gravia isn't just a voice assistant. It understands and processes **audio, video, images, and text**, allowing for a richer, more natural interaction.  
 * **Built-in File Utilities:** Perform common file operations with ease, including converting any file format to any other format, and merging or splitting PDFs.  
@@ -22,64 +21,102 @@
 * **Customizable:** Tailor Gravia to your unique workflow and preferences.  
 * **... and more\!** We're constantly adding new features to make Gravia smarter and more powerful.
 
+
 ## **💻 Installation & Setup**
 
-We offer two methods for getting Gravia running, depending on whether you're a standard user or a developer.
+Gravia offers two installation methods depending on your needs:
 
-### **1\. For Normal Users (Quick Start)**
+### **1. For Normal Users (Quick Start)**
 
-This is the recommended method for users who want to quickly install and use Gravia with minimal setup.
+This is the recommended method for most users. No dependencies need to be installed manually—just download and run!
+
+#### **Installation Steps**
+
+1. **Download the Installer:**  
+   Get the latest installer from our [Releases Page](https://github.com/Naitik4516/Gravia/releases/latest).
+2. **Run the Installer:**  
+   The installer will set up Gravia and create a desktop shortcut for easy access.
+3. **Launch Gravia:**  
+   Start Gravia from your desktop shortcut or start menu.
+
+**Optional:**
+
+* **FFmpeg:** For advanced file conversion and manipulation features, install [FFmpeg](https://ffmpeg.org/download.html). Gravia works without it, but some file utilities will be unavailable.
+
+---
+
+### **2. For Developers & Advanced Users (Run from Source)**
+
+
+If you want to run Gravia from source, customize, or contribute, follow these steps:
+
+#### **Clone the Repository**
+
+1. **Clone Gravia from GitHub:**
+   ```sh
+   git clone https://github.com/Naitik4516/Gravia.git
+   cd Gravia
+   ```
 
 #### **Prerequisites**
 
-For full functionality, ensure these external dependencies are installed on your system:
 
-* **FFmpeg:** Required for advanced file conversion and manipulation tasks.  
-  * [Download FFmpeg](https://ffmpeg.org/download.html)
 * **Python:** Required for backend services.  
-  * [Download Python](https://www.python.org/downloads/)
-* **uv:** A fast dependency manager for Python.  
-  * [Download uv](https://docs.astral.sh/uv/getting-started/installation)
+   * [Download Python](https://www.python.org/downloads/)
+* **uv:** Fast Python dependency manager.  
+   * [Download uv](https://docs.astral.sh/uv/getting-started/installation)
+* **Bun:** Required for frontend development.  
+   * [Download Bun](https://bun.sh/)
+* **FFmpeg:** (Optional) For file conversion and manipulation.  
+   * [Download FFmpeg](https://ffmpeg.org/download.html)
 
-#### **Installation**
-
-#### **1\. Backend Setup**
-
-The backend is built with Python, utilizing the FastAPI framework.
+#### **Backend Setup**
 
 1. **Navigate to the Backend Directory:**  
+   ```sh
    cd gravia/backend
-
-2. Set Up Environment Variables:  
-   Create a .env file in the backend directory and populate it with the necessary API keys for core services.
+   ```
+2. **Set Up Environment Variables:**  
+   Create a `.env` file in the backend directory and add your API keys:
 
 | Service | Environment Variable(s) | Description |
 | :---- | :---- | :---- |
-| Core LLM (Gemini) | GOOGLE\_API\_KEY or GEMINI\_API\_KEY | Key for core AI reasoning and intelligence. |
-| ASR (Deepgram) | DEEPGRAM\_API\_KEY | Key for high-accuracy Automatic Speech Recognition. |
-| Integrations (Composio) | COMPOSIO\_API\_KEY | Key for connecting to various third-party services (Gmail, Notion, etc.). |
-| Observability (Langfuse) | LANGFUSE\_PUBLIC\_KEY, LANGFUSE\_SECRET\_KEY | Keys for tracking and analyzing LLM chain execution. |
+| Core LLM (Gemini) | GOOGLE_API_KEY or GEMINI_API_KEY | Key for core AI reasoning and intelligence. |
+| ASR (Deepgram) | DEEPGRAM_API_KEY | Key for high-accuracy Automatic Speech Recognition. |
+| Integrations (Composio) | COMPOSIO_API_KEY | Key for connecting to various third-party services (Gmail, Notion, etc.). |
+| Observability (Langfuse) | LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY | Keys for tracking and analyzing LLM chain execution. |
 
-3. Install Dependencies (using uv):  
-   We recommend using uv for fast dependency management.  
-   \# Install dependencies listed in pyproject.toml  
-   uv pip install \-r pyproject.toml  
-   \# OR, for locking and synchronization:  
+3. **Install Dependencies:**  
+   ```sh
    uv sync
-
+   ```
+   Or:
+   ```sh
+   uv pip install -r pyproject.toml
+   ```
 4. **Run the FastAPI Server:**  
-   \# Run the main application file (recommended if using uv run)  
-   uv run main.py  
-   \# OR, for development with hot-reloading:  
+   ```sh
+   uv run main.py
+   ```
+   Or for development with hot-reloading:  
+   ```sh
    fastapi dev main.py
+   ```
 
-#### **2\. Frontend Setup**
+#### **Frontend Setup**
 
-1. **Install via installer:**  
-   Download and run the installer from our [Releases Page](https://github.com/Naitik4516/Gravia/releases/latest).
-   This will set up the frontend application and create a desktop shortcut for easy access.
-2. **Run the Frontend Application:**  
-   Launch the Gravia application from your desktop shortcut or start menu.
+1. **Change to the project root (if not already):**
+   ```sh
+   cd gravia
+   ```
+2. **Install frontend dependencies:**
+   ```sh
+   bun install
+   ```
+3. **Run the frontend (development mode):**
+   ```sh
+   bun tauri dev
+   ```
 
 ## **⚙️ Upcoming Features & Roadmap**
 
@@ -93,7 +130,9 @@ We're always working to expand Gravia's capabilities. Here’s what you can expe
   * **Reasoning**  
   * **Image generation & editing**  
 * **Deeper Computer Integration:** We aim to integrate Gravia even more profoundly with your computer, allowing for a level of control and efficiency that has never been seen before.  
-* **More Integrations:** More services and platforms will be supported to make Gravia the ultimate universal assistant.
+* **More Integrations:** More services and platforms will be supported to make Gravia the ultimate universal assistant.  
+* **Faster Startup & Optimizations:** We're working on compiling Python code into C or Rust and compressing binaries to significantly improve startup times and overall performance.
+
 
 ## **🤝 Contributing**
 

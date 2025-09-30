@@ -2,6 +2,7 @@ import type { Message, FileAttachment } from './types';
 import { fetch } from '@tauri-apps/plugin-http';
 import { invoke } from '@tauri-apps/api/core';
 import {PORT, BASE} from '$lib/constants/api';
+import { goto } from '$app/navigation';
 
 
 const SESSION_KEY = 'sessionId';
@@ -171,10 +172,14 @@ class ChatClient {
 
         // Emit error for unexpected disconnections
         if (!event.wasClean) {
-          // this.emit('error', {
-          //   message: `WebSocket connection closed unexpectedly. Code: ${event.code}, Reason: ${event.reason || 'Unknown'}`
-          // });
           console.error(`WebSocket connection closed unexpectedly. Code: ${event.code}, Reason: ${event.reason || 'Unknown'}`);
+        }
+
+        // If this was an initial connection failure (wasConnected === false),
+        // probe the HTTP endpoint to detect a 403 and redirect if necessary.
+        if (!wasConnected) {
+          // fire-and-forget
+          this.checkAuthAndRedirect();
         }
 
         this.tryReconnect();
@@ -192,6 +197,8 @@ class ChatClient {
     } catch (e) {
       this.connecting = false;
       console.error('WebSocket connection failed:', e);
+      // On exceptions while trying to connect, check for HTTP 403 and redirect if found
+      this.checkAuthAndRedirect();
     }
   }
 
@@ -216,6 +223,9 @@ class ChatClient {
         break;
       case 'error':
         this.emit('error', messageData.message);
+        if (messageData.message.includes('403')) {
+          goto('/auth/signup');
+        }
         this.scheduleEndEmit();
         break;
       case 'session_created':
@@ -405,6 +415,22 @@ class ChatClient {
     const len = bytes.byteLength;
     for (let i = 0; i < len; i++) binary += String.fromCharCode(bytes[i]);
     return btoa(binary);
+  }
+
+  // New helper: probe HTTP equivalent of the websocket endpoint and redirect on 403
+  private async checkAuthAndRedirect() {
+    try {
+      // convert ws:// or wss:// base to http:// or https://
+      const httpUrl = this.baseWsUrl.replace(/^wss:/i, 'https:').replace(/^ws:/i, 'http:');
+      const res = await fetch(httpUrl, { method: 'GET' });
+      // plugin-http response exposes status; guard defensively
+      const status = (res && (res as any).status) ? (res as any).status : undefined;
+      if (status === 403) {
+        goto('/auth/signup');
+      }
+    } catch {
+      // ignore network errors — reconnection logic will continue
+    }
   }
 }
 

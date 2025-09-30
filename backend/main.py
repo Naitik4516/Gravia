@@ -101,5 +101,18 @@ async def sse_endpoint(request: Request):
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
-if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=5089)
+if __name__ == "__main__":
+    config = uvicorn.Config(app, host="0.0.0.0", port=5089, log_level="info")
+    server = uvicorn.Server(config)
+
+    async def start_server():
+        task = asyncio.create_task(server.serve())
+
+        while not server.started:
+            await asyncio.sleep(0.1)
+
+        print("Server started successfully", flush=True)
+
+        await task  # keep running until shutdown
+
+    asyncio.run(start_server())

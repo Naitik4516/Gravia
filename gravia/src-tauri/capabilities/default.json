@@ -42,6 +42,15 @@
     "process:allow-exit",
     "process:allow-restart",
     "opener:allow-default-urls",
-    "opener:allow-open-path"
+    "opener:allow-open-path",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "backend/server",
+          "sidecar": true
+        }
+      ]
+    }
   ]
 }
