@@ -203,7 +203,6 @@ pub fn run() {
                 if let Some(c) = child_clone.lock().unwrap().take() {
                     let _ = c.kill();
                 }
-                window.close().ok();
             });
 
             Ok(())

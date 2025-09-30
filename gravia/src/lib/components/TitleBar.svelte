@@ -10,7 +10,6 @@
     import { getCurrentWindow } from "@tauri-apps/api/window";
     import { onMount } from "svelte";
     import { globalState, toggleWindowMode } from "$lib/state.svelte";
-    import { emit } from '@tauri-apps/api/event';
 
 
     const window = getCurrentWindow();
@@ -52,8 +51,7 @@
 
     const close = async () => {
         console.log("Closing window");
-        // await window.close();
-        await emit('app-close');
+        await window.close();
     };
 
     const minimize = async () => {

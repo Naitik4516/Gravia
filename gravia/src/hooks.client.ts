@@ -10,6 +10,7 @@ import { chatClient } from '$lib/chat/chatService';
 import { globalState } from '$lib/state.svelte';
 import { settingsCategoryUrl } from '$lib/constants/api';
 import { once } from '@tauri-apps/api/event';
+import { emit } from '@tauri-apps/api/event';
 
 const registerShortcuts = async () => {
     try {
@@ -81,13 +82,16 @@ export const init: ServerInit = async () => {
                 id: "quit",
                 text: "Quit",
                 action: async () => {
+                    await emit('app-close');
                     await exit(0);
+
                 }
             },
             {
                 id: "restart",
                 text: "Restart",
                 action: async () => {
+                    await emit('app-close');
                     await relaunch();
                 }
             }

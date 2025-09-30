@@ -1,7 +1,7 @@
 import type { Message, FileAttachment } from './types';
 import { fetch } from '@tauri-apps/plugin-http';
 import { invoke } from '@tauri-apps/api/core';
-import {PORT, BASE} from '$lib/constants/api';
+import {PORT, BASE, USER_PROFILE_URL} from '$lib/constants/api';
 import { goto } from '$app/navigation';
 
 
@@ -417,15 +417,20 @@ class ChatClient {
     return btoa(binary);
   }
 
-  // New helper: probe HTTP equivalent of the websocket endpoint and redirect on 403
+  // New helper: probe user profile endpoint and redirect on auth failures
   private async checkAuthAndRedirect() {
     try {
-      // convert ws:// or wss:// base to http:// or https://
-      const httpUrl = this.baseWsUrl.replace(/^wss:/i, 'https:').replace(/^ws:/i, 'http:');
-      const res = await fetch(httpUrl, { method: 'GET' });
+      const res = await fetch(USER_PROFILE_URL, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
       // plugin-http response exposes status; guard defensively
       const status = (res && (res as any).status) ? (res as any).status : undefined;
-      if (status === 403) {
+      if (status === 401 || status === 404 || status === 403) {
+        console.warn(`Received ${status} from profile endpoint; redirecting to signup.`);
         goto('/auth/signup');
       }
     } catch {
