@@ -18,7 +18,7 @@
         "width": 1100,
         "decorations": false,
         "minWidth": 1060,
-        "visible": true
+        "visible": false
       },
       {
         "title": "Loading...",
