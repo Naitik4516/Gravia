@@ -74,55 +74,55 @@ const registerShortcuts = async () => {
 }
 
 export const init: ServerInit = async () => {
-    const appWindow = getCurrentWindow();
-
-    const menu = await Menu.new({
-        items: [
-            {
-                id: "quit",
-                text: "Quit",
-                action: async () => {
-                    await emit('app-close');
-                    await exit(0);
-
-                }
-            },
-            {
-                id: "restart",
-                text: "Restart",
-                action: async () => {
-                    await emit('app-close');
-                    await relaunch();
-                }
-            }
-        ],
-    });
-
-    const iconCandidate = await defaultWindowIcon();
-    const options = {
-        icon: iconCandidate || '',
-        menu,
-        menuOnLeftClick: false,
-        action: (event) => {
-            switch (event.type) {
-                case 'Click':
-                    console.log(`mouse ${event.button} button pressed`);
-                    if (event.button !== 'Left') break;
-                    appWindow.unminimize();
-                    appWindow.show();
-                    appWindow.setFocus();
-                    break;
-                case 'DoubleClick':
-                    console.log(`mouse ${event.button} button pressed`);
-                    break;
-            }
-        }
-    };
-
-    const tray = await TrayIcon.new(options);
-
 
     await once('server-ready', async (_event) => {
+        const appWindow = getCurrentWindow();
+
+        const menu = await Menu.new({
+            items: [
+                {
+                    id: "quit",
+                    text: "Quit",
+                    action: async () => {
+                        await emit('app-close');
+                        await exit(0);
+
+                    }
+                },
+                {
+                    id: "restart",
+                    text: "Restart",
+                    action: async () => {
+                        await emit('app-close');
+                        await relaunch();
+                    }
+                }
+            ],
+        });
+
+        const iconCandidate = await defaultWindowIcon();
+        const options = {
+            icon: iconCandidate || '',
+            menu,
+            menuOnLeftClick: false,
+            action: (event) => {
+                switch (event.type) {
+                    case 'Click':
+                        console.log(`mouse ${event.button} button pressed`);
+                        if (event.button !== 'Left') break;
+                        appWindow.unminimize();
+                        appWindow.show();
+                        appWindow.setFocus();
+                        break;
+                    case 'DoubleClick':
+                        console.log(`mouse ${event.button} button pressed`);
+                        break;
+                }
+            }
+        };
+
+        const tray = await TrayIcon.new(options);
+
         const splashscreen = await Window.getByLabel("splashscreen");
         const mainWindow = await Window.getByLabel("main");
         splashscreen?.close();

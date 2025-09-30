@@ -1,58 +1,54 @@
 <script lang="ts">
   import Input from "../components/Input.svelte";
   import AuthCard from "../components/AuthCard.svelte";
-  import { signupSchema } from "$lib/schemas";
-  import {
-    type SuperValidated,
-    type Infer,
-    superForm,
-  } from "sveltekit-superforms";
-  import { zodClient } from "sveltekit-superforms/adapters";
   import { toast } from "svelte-sonner";
   import { goto } from "$app/navigation";
+  import { SIGNUP_URL } from "$lib/constants/api";
 
-  let {
-    data,
-  }: {
-    data: {
-      form: SuperValidated<Infer<typeof signupSchema>>;
-      message?: string;
-      redirectTo?: string;
-      success?: boolean;
-    };
-  } = $props();
+  let name = $state('');
+  let email = $state('');
+  let submitting = $state(false);
 
-  const form = superForm(data.form, {
-    validators: zodClient(signupSchema),
-    onResult: async ({ result }) => {
-      if (!result) return;
+  async function handleSubmit(event: Event) {
+    event.preventDefault();
+    if (submitting) return;
 
-      const payload = (result.data ?? {}) as {
-        message?: string;
-        redirectTo?: string;
-        success?: boolean;
-      };
+    submitting = true;
+    try {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
 
-      if (result.status && result.status >= 200 && result.status < 300) {
-        if (payload.message) {
-          toast.success(payload.message);
+      const res = await fetch(SIGNUP_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        let errorMessage = 'Signup failed. Please try again.';
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          try {
+            const errorData = await res.json();
+            if (errorData && typeof errorData.message === 'string') {
+              errorMessage = errorData.message;
+            }
+          } catch (jsonError) {
+            console.error('Failed to parse error response:', jsonError);
+          }
         }
-        if (payload.redirectTo) {
-          await goto(payload.redirectTo);
-        }
-      } else if (result.status && result.status >= 400) {
-        toast.error(payload.message ?? "Signup failed. Please try again.");
+        toast.error(errorMessage);
+      } else {
+        toast.success('Welcome to Gravia! ' + name);
+        await goto('/auth/signup/success');
       }
-    },
-    onError: ({ result }) => {
-      console.error("Signup form submission error:", result);
-      toast.error("An unexpected error occurred. Please try again later.");
-    },
-  });
-
-  const { form: formData, enhance, errors } = form;
-
-
+    } catch (error) {
+      console.error('Network or server error:', error);
+      toast.error('An unexpected error occurred. Please try again later.');
+    } finally {
+      submitting = false;
+    }
+  }
 </script>
 
 
@@ -60,24 +56,21 @@
   title="Account Details"
   subtitle="This helps me create a personalized experience for you."
   primaryButton="Create Account"
-  { enhance }
+  onsubmit={handleSubmit}
+  {submitting}
 >
   <Input
     type="text"
     name="name"
     placeholder="Name"
     iconname="User"
-    bind:value={$formData.name}
-    {form}
-    {errors}
+    bind:value={name}
   />
   <Input
     type="email"
     name="email"
     placeholder="Email"
     iconname="Mail"
-    bind:value={$formData.email}
-    {form}
-    {errors}
+    bind:value={email}
   />
 </AuthCard>

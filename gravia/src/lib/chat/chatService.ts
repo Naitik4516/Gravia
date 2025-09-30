@@ -1,5 +1,4 @@
 import type { Message, FileAttachment } from './types';
-import { fetch } from '@tauri-apps/plugin-http';
 import { invoke } from '@tauri-apps/api/core';
 import {PORT, BASE, USER_PROFILE_URL} from '$lib/constants/api';
 import { goto } from '$app/navigation';
@@ -427,14 +426,22 @@ class ChatClient {
           'Accept': 'application/json',
         },
       });
-      // plugin-http response exposes status; guard defensively
-      const status = (res && (res as any).status) ? (res as any).status : undefined;
-      if (status === 401 || status === 404 || status === 403) {
-        console.warn(`Received ${status} from profile endpoint; redirecting to signup.`);
-        goto('/auth/signup');
+      if (res.status === 401 || res.status === 404 || res.status === 403) {
+        // No user session -> redirect to signup/login flow
+        // But avoid redirecting if we're already on an auth route (to prevent loops)
+        if (typeof window !== 'undefined') {
+          const pathname = window.location.pathname || '';
+          if (!pathname.startsWith('/auth')) {
+            // Use replace so we don't pollute history and to avoid repeated push
+            window.location.replace('/auth/signup');
+          } else {
+            // already on auth page, don't redirect — let the auth UI handle state
+            console.debug('checkAuthAndRedirect: unauthenticated but already on auth route, skipping redirect');
+          }
+        }
       }
-    } catch {
-      // ignore network errors — reconnection logic will continue
+    } catch (err) {
+      console.error('Error while checking auth', err);
     }
   }
 }

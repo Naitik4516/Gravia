@@ -148,7 +148,18 @@ class SettingsHandler(DataHandlerBase):
     def set_category(self, category: str, data) -> bool:
         if self.data is None:
             return False
-        self.data[category] = data
+        
+        if isinstance(data, list):
+            self.data[category] = data
+        elif isinstance(data, dict):
+            for key, value in data.items():
+                for item in self.data.get(category, []):
+                    if item["key"] == key:
+                        item["value"] = value
+                        break
+        else:
+            return False
+        
         self.save_data(self.data)
         return True
 

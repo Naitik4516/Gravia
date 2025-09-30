@@ -149,6 +149,7 @@ pub fn run() {
          .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
             let shell = app.shell();
+            let window_for_spawn = window.clone();
 
             // Check if server.exe is already running
             #[cfg(target_os = "windows")]
@@ -160,6 +161,7 @@ pub fn run() {
 
             if already_running {
                 println!("server.exe already running, skipping sidecar startup");
+                window_for_spawn.emit("server-ready", true).ok();
                 return Ok(());
             }
 
@@ -168,7 +170,6 @@ pub fn run() {
             let (mut rx, child) = sidecar.spawn().expect("Failed to spawn server.exe");
             let child = Arc::new(Mutex::new(Some(child)));
 
-            let window_for_spawn = window.clone();
 
             tauri::async_runtime::spawn(async move {
                 let mut server_started = false;

@@ -1,78 +1,97 @@
 <script lang="ts">
-    import Input from "../../components/Input.svelte";
-    import * as Select from "$lib/components/ui/select/index.js";
-    import { preferencesSchema } from "$lib/schemas";
-    import {
-        type SuperValidated,
-        type Infer,
-        superForm,
-    } from "sveltekit-superforms";
-    import { zodClient } from "sveltekit-superforms/adapters";
-
-    import * as Form from "$lib/components/ui/form/index.js";
-    import { Button } from "$lib/components/ui/button/index.js";
+    import { SETTINGS_UPDATE_CATEGORY_URL } from "$lib/constants/api";
     import { toast } from "svelte-sonner";
+    import { goto } from "$app/navigation";
+    import { Button } from "$lib/components/ui/button/index.js";
     import { Progress } from "$lib/components/ui/progress/index.js";
+    import { Input } from "$lib/components/ui/input/index.js";
+    import * as Select from "$lib/components/ui/select/index.js";
+    import { Textarea } from "$lib/components/ui/textarea/index.js";
     import { onMount } from "svelte";
     import { gsap } from "gsap";
+      import { relaunch } from '@tauri-apps/plugin-process';
+import { emit } from '@tauri-apps/api/event';
 
-    let {
-        data,
-    }: { data: { form: SuperValidated<Infer<typeof preferencesSchema>> } } =
-        $props();
 
-    const form = superForm(data.form, {
-        validators: zodClient(preferencesSchema),
-        onResult: ({ result }) => {
-            submitting = false;
-            if (result?.status && result.status >= 200 && result.status < 300) {
-                toast.success("Preferences saved");
-            } else if (result?.status) {
-                toast.error("Failed to save preferences");
+    let preferred_name = $state('');
+    let preferred_language = $state('');
+    let response_tone = $state('');
+    let response_length = $state('');
+    let humour_level = $state('');
+    let custom_instructions = $state('');
+    let submitting = $state(false);
+
+    async function handleSubmit(event: Event) {
+        event.preventDefault();
+        if (submitting) return;
+
+        submitting = true;
+        try {
+            const settings = {
+                preferred_name,
+                preferred_language,
+                response_tone,
+                response_length,
+                humour_level,
+                custom_instructions,
+            };
+
+            const res = await fetch(SETTINGS_UPDATE_CATEGORY_URL, {
+                method: 'PUT',
+                body: JSON.stringify({ category: "personalization", settings }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (res.ok) {
+                toast.success('Preferences saved successfully');
+                        await emit('app-close');
+        await relaunch();
+            } else {
+                toast.error('Failed to save preferences');
             }
-        },
-        onError: ({ result }) => {
+        } catch (error) {
+            toast.error('An error occurred while saving preferences');
+            console.error('Fetch error:', error);
+        } finally {
             submitting = false;
-            toast.error("Submission error");
         }
-    });
-
-    const { form: formData, enhance, errors } = form;
+    }
 
     const questions = [
         {
-            name: "preferred_name" as keyof typeof $formData,
+            name: "preferred_name" as keyof typeof preferred_name,
             question: "What would you like to be called?",
             hint: "e.g 'Sir', 'Dude', 'Champ', etc.",
             type: "text",
         },
         {
-            name: "preferred_language" as keyof typeof $formData,
+            name: "preferred_language" as keyof typeof preferred_language,
             question: "Which language do you feel most comfortable using?",
             hint: "e.g., English, Spanish, etc.",
             type: "text",
         },
         {
-            name: "response_tone" as keyof typeof $formData,
+            name: "response_tone" as keyof typeof response_tone,
             question: "How would you like me to sound when I reply?",
             type: "select",
             options: ["Formal", "Informal", "Neutral", "Professional", "Encouraging", "Optimistic", "Witty or Playful", "Sarcastic", "Empathetic"],
         },
         {
-            // Match schema key: response_length (was preferred_length causing undefined)
-            name: "response_length" as keyof typeof $formData,
+            name: "response_length" as keyof typeof response_length,
             question: "How long should my responses be for you?",
             type: "select",
             options: ["brief", "moderate", "detailed", "dynamic"],
         },
         {
-            name: "humour_level" as keyof typeof $formData,
+            name: "humour_level" as keyof typeof humour_level,
             question: "How much humour would you like in my replies?",
             type: "select",
             options: ["serious", "slightly humorous", "balanced", "funny", "very humorous"],
         },
         {
-            name: "custom_instructions" as keyof typeof $formData,
+            name: "custom_instructions" as keyof typeof custom_instructions,
             question: "Any special instructions for me?",
             type: "textarea"
         }
@@ -84,12 +103,7 @@
     let progress = $derived(Math.round(((currentStep + 1) / totalSteps) * 100));
 
     let currentQuestion = $derived(questions[currentStep]);
-    let currentQuestionName = $derived(currentQuestion.name);
-
-    // Debug: reactive log (comment out in production)
-    $effect(() => {
-        console.log("Current step question:", currentQuestionName, currentQuestion);
-    });
+    let currentQuestionName = $derived(currentQuestion.name as string);
 
     let isLastStep = $derived(currentStep === totalSteps - 1);
     let isFirstStep = $derived(currentStep === 0);
@@ -101,7 +115,17 @@
         return true;
     };
 
-    let currentValue = $derived($formData[currentQuestionName]);
+    let currentValue = $derived(() => {
+        switch (currentQuestionName) {
+            case 'preferred_name': return preferred_name;
+            case 'preferred_language': return preferred_language;
+            case 'response_tone': return response_tone;
+            case 'response_length': return response_length;
+            case 'humour_level': return humour_level;
+            case 'custom_instructions': return custom_instructions;
+            default: return '';
+        }
+    });
     let hasValue = $derived(isFilled(currentValue));
     let canSkip = $derived(!hasValue);
 
@@ -121,7 +145,6 @@
                 isAnimating = false;
             },
         });
-            // NOTE: Removed unsupported gsap event callbacks (onInterrupt, onKill) to satisfy TS types
 
         const slideOutX = direction === "next" ? -100 : 100;
         const slideInX = direction === "next" ? 100 : -100;
@@ -148,7 +171,6 @@
                 const delta = direction === "next" ? 1 : -1;
                 const nextStep = currentStep + delta;
                 currentStep = Math.min(Math.max(nextStep, 0), totalSteps - 1);
-                console.log(currentStep);
             })
             // Slide in new content
             .set(".form-content", { x: slideInX })
@@ -171,7 +193,6 @@
             );
     };
 
-
     const nextStep = () => {
         if (currentStep < totalSteps - 1 && !isAnimating) {
             animateStepChange("next");
@@ -185,7 +206,6 @@
     };
 
     let formEl: HTMLFormElement;
-    let submitting = $state(false);
     const handleSkip = () => {
         if (isLastStep) {
             formEl?.requestSubmit();
@@ -198,92 +218,83 @@
 <!-- Progress indicator -->
 <Progress value={progress} />
 <form
-    method="POST"
+    onsubmit={handleSubmit}
     class="flex flex-col justify-between items-center h-full w-full py-14"
-    use:enhance={{
-        onSubmit: async (event) => {
-            const { cancel, formElement, formData } = event;
-            if (submitting) {
-                cancel();
-                return;
-            }
-            submitting = true;
-            // Let superforms proceed normally; no cancel => it handles fetch.
-        }
-    }}
     bind:this={formEl}
 >
     <h1 class="form-title font-poppins text-white text-5xl font-black mb-10 text-center">
         {currentQuestion.question}
     </h1>
     <div class="form-content flex flex-col items-center lg:w-3/5 w-4/5">
-            {#if currentQuestion.type === "text"}
+        {#if currentQuestion.type === "text"}
+            {#if currentQuestionName === 'preferred_name'}
                 <Input
-                    name={currentQuestionName}
                     type="text"
                     placeholder={currentQuestion.hint || ""}
-                    bind:value={$formData[currentQuestionName]}
-                    {form}
-                    {errors}
+                    bind:value={preferred_name}
                 />
-
-            {:else if currentQuestion.type === "select"}
-                <Form.Field {form} name={currentQuestionName} class="w-full">
-                    <Form.Control>
-                        {#snippet children({ props })}
-                            <Select.Root
-                                type="single"
-                                name={props.name}
-                                onValueChange={(v) => {
-                                    if (v) {
-                                        $formData[currentQuestionName] = v;
-                                    }
-                                }}
-                            >
-                                <Select.Trigger
-                                    class="w-full bg-slate-950/90  h-16 rounded-xl hover:bg-slate-950 hover:text-white outline-white/5 capitalize "
-                                    style="height: 4rem;"
-                                    {...props}
-                                >
-                                    {$formData[currentQuestionName]
-                                        ? $formData[currentQuestionName]
-                                        : "Select an option"}
-                                </Select.Trigger>
-                                <Select.Content>
-                                    {#each currentQuestion.options || [] as option}
-                                        <Select.Item
-                                            value={option.toLowerCase()}
-                                            label={option.toLocaleUpperCase()}
-                                        />
-                                    {/each}
-                                </Select.Content>
-                            </Select.Root>
-                            <input
-                                type="hidden"
-                                name={currentQuestionName}
-                                value={$formData[currentQuestionName] || ""}
-                            />
-                        {/snippet}
-                    </Form.Control>
-                    <Form.FieldErrors />
-                </Form.Field>
-
-            {:else if currentQuestion.type === "textarea"}
-                <Form.Field {form} name={currentQuestionName} class="w-full">
-                    <Form.Control>
-                        {#snippet children({ props })}
-                            <textarea
-                                class="w-full bg-slate-950/90 rounded-xl p-4 text-white/70 text-lg font-normal placeholder:font-['Audiowide'] outline-white/5 hover:outline-2 hover:shadow-xl resize-none"
-                                style="height: 8rem;"
-                                placeholder={currentQuestion.hint || "Type your response here..."}
-                                {...props}
-                                bind:value={$formData[currentQuestionName]}
-                            ></textarea>
-                        {/snippet}
-                    </Form.Control>
-                    <Form.FieldErrors />
-                </Form.Field>
+            {:else if currentQuestionName === 'preferred_language'}
+                <Input
+                    type="text"
+                    placeholder={currentQuestion.hint || ""}
+                    bind:value={preferred_language}
+                />
             {/if}
+        {:else if currentQuestion.type === "select"}
+            {#if currentQuestionName === 'response_tone'}
+                <Select.Root
+                    type="single"
+                    name="response_tone"
+                    bind:value={response_tone}
+                >
+                    <Select.Trigger class="w-full">
+                        {response_tone || "Select an option"}
+                    </Select.Trigger>
+                    <Select.Content>
+                        {#each currentQuestion.options || [] as option}
+                            <Select.Item value={option.toLowerCase()} label={option} />
+                        {/each}
+                    </Select.Content>
+                </Select.Root>
+            {:else if currentQuestionName === 'response_length'}
+                <Select.Root
+                    type="single"
+                    name="response_length"
+                    bind:value={response_length}
+                >
+                    <Select.Trigger class="w-full">
+                        {response_length || "Select an option"}
+                    </Select.Trigger>
+                    <Select.Content>
+                        {#each currentQuestion.options || [] as option}
+                            <Select.Item value={option.toLowerCase()} label={option} />
+                        {/each}
+                    </Select.Content>
+                </Select.Root>
+            {:else if currentQuestionName === 'humour_level'}
+                <Select.Root
+                    type="single"
+                    name="humour_level"
+                    bind:value={humour_level}
+                >
+                    <Select.Trigger class="w-full">
+                        {humour_level || "Select an option"}
+                    </Select.Trigger>
+                    <Select.Content>
+                        {#each currentQuestion.options || [] as option}
+                            <Select.Item value={option.toLowerCase()} label={option} />
+                        {/each}
+                    </Select.Content>
+                </Select.Root>
+            {/if}
+        {:else if currentQuestion.type === "textarea"}
+            <Textarea
+                placeholder={currentQuestion.hint || "Type your response here..."}
+                bind:value={custom_instructions}
+                class="resize-none"
+                rows={8}
+            />
+        {/if}
     </div>
 
     <!-- Navigation Buttons -->

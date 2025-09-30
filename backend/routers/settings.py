@@ -20,7 +20,7 @@ class SettingUpdateRequest(BaseModel):
 
 class SettingsCategoryUpdateRequest(BaseModel):
     category: str
-    settings: List
+    settings: List | Dict[str, Any]
 
 class UserSettingsResponse(BaseModel):
     preferences: Dict[str, Any]

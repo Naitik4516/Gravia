@@ -8,8 +8,8 @@
         iconname = "",
         name,
         value = $bindable(),
-        form,
-        errors,
+        form = null,
+        errors = null,
         animate=true
     } = $props();
 </script>
@@ -60,6 +60,7 @@
     </span>
 {/snippet}
 
+{#if form}
 <Form.Field {form} {name} class="w-full" id={name}>
     <div
         class="flex flex-col bg-slate-950/90 rounded-lg shadow-lg outline-1 {$errors[
@@ -95,3 +96,25 @@
         {/if}
     </div>
 </Form.Field>
+{:else}
+<div
+    class="flex flex-col bg-slate-950/90 rounded-lg shadow-lg outline-1 outline-white/10 m-4 px-3 py-3 w-full max-h-24 min-h-18 hover:outline-2 hover:shadow-xl align-center justify-center transition-all"
+    {...(animate ? { 'use:slide': true } : {})}
+>
+    <div class="flex">
+        {#if iconname}
+            <div class="mr-3 ml-1">
+                {@render Icon(iconname)}
+            </div>
+        {/if}
+        <input
+            {type}
+            {placeholder}
+            {name}
+            id={name}
+            bind:value
+            class="w-full h-full bg-transparent text-white/70 text-lg font-normal placeholder:font-['Audiowide'] outline-none"
+        />
+    </div>
+</div>
+{/if}

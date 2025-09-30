@@ -1,5 +1,6 @@
 import { USER_PROFILE_URL } from '$lib/constants/api';
 import { globalState } from '$lib/state.svelte';
+import { redirect } from '@sveltejs/kit';
 
 export async function fetchUserProfile(): Promise<any | null> {
   // Always run in browser context; caller should call from onMount or client-side code.
@@ -19,7 +20,8 @@ export async function fetchUserProfile(): Promise<any | null> {
         const pathname = window.location.pathname || '';
         if (!pathname.startsWith('/auth')) {
           // Use replace so we don't pollute history and to avoid repeated push
-          window.location.replace('/auth/signup');
+          // window.location.replace('/auth/signup');
+          redirect(303, '/auth/signup');
         } else {
           // already on auth page, don't redirect — let the auth UI handle state
           console.debug('fetchUserProfile: unauthenticated but already on auth route, skipping redirect');

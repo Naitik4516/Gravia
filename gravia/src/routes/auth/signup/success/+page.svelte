@@ -3,6 +3,14 @@
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
     import { gsap } from "gsap";
+      import { relaunch } from '@tauri-apps/plugin-process';
+import { emit } from '@tauri-apps/api/event';
+
+
+    const handleSubmit = async () => {
+        await emit('app-close');
+        await relaunch();
+    };
 
     onMount(() => {
         // Set initial states
@@ -91,7 +99,7 @@
     >
         <button
             class="font-['Tektur'] text-lg tracking-wider text-gray-200 bg-none border-none cursor-pointer  hover:text-white hover:font-bold hover:drop-shadow-xl transition-all pb-1"
-            onclick={() => goto("/")}
+            onclick={handleSubmit}
         >
             Skip for now
         </button>
