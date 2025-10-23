@@ -5,6 +5,7 @@ aiohappyeyeballs==2.6.1
 aiohttp==3.12.15
 aiosignal==1.4.0
 aiosqlite==0.21.0
+altgraph==0.17.4
 annotated-types==0.7.0
 anyio==4.11.0
 apscheduler==3.11.0
@@ -136,6 +137,7 @@ packaging==25.0
 pandas==2.3.2
 parso==0.8.5
 pdfminer-six==20250506
+pefile==2023.2.7
 pillow==11.3.0
 platformdirs==4.4.0
 pluggy==1.6.0
@@ -150,7 +152,6 @@ pyarrow==21.0.0
 pyasn1==0.6.1
 pyasn1-modules==0.4.2
 pyaudio==0.2.14
-pyautogui==0.9.54
 pycountry==24.6.1
 pycparser==2.23
 pydantic==2.11.9
@@ -159,6 +160,8 @@ pydantic-settings==2.11.0
 pydub==0.25.1
 pygetwindow==0.0.9
 pygments==2.19.2
+pyinstaller==6.16.0
+pyinstaller-hooks-contrib==2025.9
 pyjwt==2.10.1
 pylance==0.37.0
 pymsgbox==2.0.1
@@ -179,11 +182,11 @@ python-magic==0.4.27
 python-magic-bin==0.4.14
 python-multipart==0.0.20
 python-pptx==1.0.2
-python-vlc==3.0.21203
 pytimeparse==1.1.8
 pytweening==1.2.0
 pytz==2025.2
 pywin32==311
+pywin32-ctypes==0.2.3
 pyyaml==6.0.3
 pyzmq==27.1.0
 regex==2025.9.18
@@ -197,6 +200,7 @@ rignore==0.6.4
 rsa==4.9.1
 screeninfo==0.8.1
 sentry-sdk==2.39.0
+setuptools==80.9.0
 sgmllib3k==1.0.0
 shellingham==1.5.4
 six==1.17.0
